@@ -1,6 +1,8 @@
 package org.example.app1.service;
 
 import org.example.app1.domain.Maintenance;
+import org.example.app1.web.dto.MaintenanceDTO;
+
 import java.util.List;
 
 public interface IMaintenanceService {
@@ -9,4 +11,7 @@ public interface IMaintenanceService {
     List<Maintenance> findAll();
     Maintenance update(Long id, Maintenance maintenance);
     void deleteById(Long id);
+
+    // La méthode pour l'affectation avec le DTO
+    Maintenance affecterMaintenance(MaintenanceDTO dto);
 }

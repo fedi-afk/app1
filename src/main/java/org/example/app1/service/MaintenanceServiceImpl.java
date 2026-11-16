@@ -2,8 +2,11 @@ package org.example.app1.service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.app1.domain.Maintenance;
+import org.example.app1.domain.Vehicule;
 import org.example.app1.exception.ResourceNotFoundException;
 import org.example.app1.repository.IMaintenanceRepository;
+import org.example.app1.repository.IVehiculeRepository;
+import org.example.app1.web.dto.MaintenanceDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,14 +16,12 @@ import java.util.List;
 public class MaintenanceServiceImpl implements IMaintenanceService {
 
     private final IMaintenanceRepository maintenanceRepository;
+    private final IVehiculeRepository vehiculeRepository;
 
     @Override
     public Maintenance create(Maintenance maintenance) {
         if (maintenance.getIdMaintenance() != null) {
             throw new IllegalArgumentException("Une nouvelle maintenance ne doit pas avoir d'identifiant");
-        }
-        if (maintenance.getDateFin() != null && maintenance.getDateFin().isBefore(maintenance.getDateDebut())) {
-            throw new IllegalArgumentException("La date de fin ne peut pas être antérieure à la date de début");
         }
         return maintenanceRepository.save(maintenance);
     }
@@ -51,5 +52,22 @@ public class MaintenanceServiceImpl implements IMaintenanceService {
             throw new ResourceNotFoundException("Maintenance", id);
         }
         maintenanceRepository.deleteById(id);
+    }
+
+    @Override
+    public Maintenance affecterMaintenance(MaintenanceDTO dto) {
+        // 1. On cherche le véhicule
+        Vehicule vehicule = vehiculeRepository.findById(dto.getIdVehicule())
+                .orElseThrow(() -> new ResourceNotFoundException("Vehicule", dto.getIdVehicule()));
+
+        // 2. On crée la maintenance
+        Maintenance maintenance = new Maintenance();
+        maintenance.setDateDebut(dto.getDateDebut());
+        maintenance.setDateFin(dto.getDateFin());
+        maintenance.setDescription(dto.getDescription());
+        maintenance.setVehicule(vehicule);
+
+        // 3. On sauvegarde
+        return maintenanceRepository.save(maintenance);
     }
 }

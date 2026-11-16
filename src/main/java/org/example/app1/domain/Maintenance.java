@@ -1,5 +1,6 @@
 package org.example.app1.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +10,6 @@ import lombok.Setter;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "maintenance")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -23,12 +23,11 @@ public class Maintenance {
     @Column(nullable = false)
     private LocalDate dateDebut;
 
-    @Column(nullable = false)
     private LocalDate dateFin;
 
-    @Column(length = 255)
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore // <-- AJOUTEZ CETTE LIGNE
     private Vehicule vehicule;
 }

@@ -3,6 +3,9 @@ package org.example.app1.domain;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,6 +27,10 @@ public class Equipement {
     @Column(nullable = false, length = 100)
     private String libelle;
 
+
+
     @ManyToMany(mappedBy = "equipements", fetch = FetchType.LAZY)
+    @JsonIgnore // <-- AJOUTEZ CETTE LIGNE
     private Set<Vehicule> vehicules = new HashSet<>();
+
 }
